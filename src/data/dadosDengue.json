@@ -1,0 +1,17 @@
+[
+    {
+      "municipio": "São Paulo",
+      "estado": "SP",
+      "latitude": -23.55052,
+      "longitude": -46.633308,
+      "casos": 2000
+    },
+    {
+      "municipio": "Campinas",
+      "estado": "SP",
+      "latitude": -22.909938,
+      "longitude": -47.062633,
+      "casos": 700
+    }
+  ]
+  
