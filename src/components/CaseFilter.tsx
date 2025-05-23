@@ -14,6 +14,7 @@ const CaseFilter: React.FC<Props> = ({ faixa, setFaixa }) => (
       <Picker.Item label="0-500 casos" value="0-500" />
       <Picker.Item label="501-1000 casos" value="501-1000" />
       <Picker.Item label="Mais de 1000 casos" value="1000+" />
+      <Picker.Item label="Mais de 5000 casos" value="5000+" />
     </Picker>
   </View>
 );

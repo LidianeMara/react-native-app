@@ -25,7 +25,8 @@ const Home: React.FC = () => {
   const filtrar = (caso: DengueCaso): boolean => {
     if (faixa === '0-500') return caso.casos <= 500;
     if (faixa === '501-1000') return caso.casos > 500 && caso.casos <= 1000;
-    if (faixa === '1000+') return caso.casos > 1000;
+    if (faixa === '1000+') return caso.casos > 1000 && caso.casos <=5000;
+    if (faixa === '5000') return caso.casos >= 5000;
     return true;
   };
 
