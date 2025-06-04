@@ -5,6 +5,7 @@ import { getCoordinatesByGeocode } from '../utils/coordinates';
 
 interface Props {
   caso: DengueCaso;
+  geocodeList: string[];
 }
 
 const DengueMarker: React.FC<Props> = ({ caso }) => {

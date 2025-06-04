@@ -7,6 +7,7 @@ import DengueMarker from './DengueMarker';
 
 interface Props {
   dados: DengueCaso[];
+  geocodes: string[];
 }
 
 const BRAZIL_REGION = {
@@ -16,7 +17,7 @@ const BRAZIL_REGION = {
   longitudeDelta: 40,
 };
 
-const DengueMap: React.FC<Props> = ({ dados }) => {
+const DengueMap: React.FC<Props> = ({ dados, geocodes }) => {
   const mapRef = useRef<MapView>(null);
 
   useEffect(() => {
@@ -35,10 +36,13 @@ const DengueMap: React.FC<Props> = ({ dados }) => {
       minZoomLevel={4} // Limit minimum zoom to show all Brazil
       maxZoomLevel={15} // Limit maximum zoom for better performance
     >
-      {dados.map((caso, index) => {
-        console.log('casos', caso);
-        return <DengueMarker key={`${caso.geocode}-${index}`} caso={caso} />;
-      })}
+      {dados.map((caso, index) => (
+        <DengueMarker
+          key={`${caso.geocode}-${index}`}
+          caso={caso}
+          geocodeList={geocodes}
+        />
+      ))}
     </MapView>
   );
 };

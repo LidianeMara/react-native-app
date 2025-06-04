@@ -18,13 +18,16 @@ const Home: React.FC = () => {
   const [endYear, setEndYear] = useState(2023);
   const [startWeek, setStartWeek] = useState(1);
   const [endWeek, setEndWeek] = useState(52);
+  const [geocodeList, setGeocodeList] = useState<string[]>([]);
 
-  const fetchAllMunicipios = async () => {
+  const fetchDadosMunicipios = async (geocodes: string | string[]) => {
     try {
       setLoading(true);
-      const promises = municipios.map(mun => 
+      const geocodeArray = Array.isArray(geocodes) ? geocodes : [geocodes];
+      setGeocodeList(geocodeArray);
+      const promises = geocodeArray.map(geocode => 
         consultarCasosCidade({
-          geocode: mun.geocode,
+          geocode,
           disease,
           ew_start: startWeek,
           ew_end: endWeek,
@@ -34,20 +37,22 @@ const Home: React.FC = () => {
       );
       const results = await Promise.all(promises);
       const allCases = results.flat();
-      setDados(allCases);
+      setDados(Array.isArray(allCases) ? allCases : allCases ? [allCases] : []);
     } catch (error) {
-      console.error('Erro ao buscar dados dos municípios:', error);
+      console.error('Erro ao buscar dados:', error);
+      setDados([]);
     } finally {
       setLoading(false);
     }
   };
 
+  // Initial data load
   useEffect(() => {
     const fetchData = async () => {
       try {
         const municipiosData = await consultarMunicipios();
         setMunicipios(municipiosData);
-        await fetchAllMunicipios();
+        await fetchDadosMunicipios(municipiosData.map(m => m.geocode));
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Erro desconhecido';
         Alert.alert('Erro', message);
@@ -58,55 +63,21 @@ const Home: React.FC = () => {
     checarAreaDeRisco();
   }, []);
 
-  const fetchDadosMunicipio = async (geocode: string) => {
-    try {
-      setLoading(true);
-      const response = await consultarCasosCidade({
-        geocode,
-        disease,
-        ew_start: startWeek,
-        ew_end: endWeek,
-        ey_start: startYear,
-        ey_end: endYear,
-      });
-      setDados(response);
-    } catch (error) {
-      console.error('Erro ao buscar dados do município:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Combined effect for all filter changes
+  useEffect(() => {
+    if (!municipios.length) return;
+    
+    const geocodes = faixa === 'TODOS' 
+      ? municipios.map(m => m.geocode)
+      : faixa;
+    
+    fetchDadosMunicipios(geocodes);
+  }, [faixa, disease, startYear, endYear, startWeek, endWeek, municipios]);
 
   const filtrar = (caso: DengueCaso): boolean => {
     if (faixa === 'TODOS') return true;
-    return caso.geocode === faixa;
+    return geocodeList.includes(caso.geocode);
   };
-
-  useEffect(() => {
-    if (faixa === 'TODOS' && municipios.length > 0) {
-      fetchAllMunicipios();
-    } else if (faixa !== 'TODOS') {
-      fetchDadosMunicipio(faixa);
-    }
-  }, [faixa, municipios]);
-
-  // Add effect to refetch data when disease changes
-  useEffect(() => {
-    if (faixa === 'TODOS') {
-      fetchAllMunicipios();
-    } else {
-      fetchDadosMunicipio(faixa);
-    }
-  }, [disease]);
-
-  // Update the date effect
-  useEffect(() => {
-    if (faixa === 'TODOS') {
-      fetchAllMunicipios();
-    } else {
-      fetchDadosMunicipio(faixa);
-    }
-  }, [startYear, endYear, startWeek, endWeek]);
 
   const dadosFiltrados = dados.filter(filtrar);
 
@@ -136,7 +107,10 @@ const Home: React.FC = () => {
               setEndWeek={setEndWeek}
             />
           </View>
-          <DengueMap dados={dadosFiltrados} />
+          <DengueMap 
+            dados={dadosFiltrados} 
+            geocodes={geocodeList} 
+          />
         </>
       )}
     </View>
