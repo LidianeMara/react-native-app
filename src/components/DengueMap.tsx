@@ -9,32 +9,36 @@ interface Props {
   dados: DengueCaso[];
 }
 
+const BRAZIL_REGION = {
+  latitude: -15.7801,
+  longitude: -47.9292,
+  latitudeDelta: 40,
+  longitudeDelta: 40,
+};
+
 const DengueMap: React.FC<Props> = ({ dados }) => {
-  const mapRef = useRef(null);
+  const mapRef = useRef<MapView>(null);
 
   useEffect(() => {
-    console.log('DengueMap: Dados recebidos para o mapa:', dados.length, 'casos');
-    if (dados.length > 0) {
-      console.log('DengueMap: Primeiro caso nos dados:', dados[0]);
+    if (dados.length > 0 && mapRef.current) {
+      // Reset to Brazil view when showing all municipalities
+      mapRef.current.animateToRegion(BRAZIL_REGION);
     }
   }, [dados]);
 
   return (
-    // Usando MapView diretamente para testar
     <MapView
-      ref={mapRef} // Adicione a ref de volta para MapView
+      ref={mapRef}
       style={styles.map}
-      region={{
-        latitude: -14.235,
-        longitude: -51.9253,
-        latitudeDelta: 30,
-        longitudeDelta: 30,
-      }}
-      provider={PROVIDER_GOOGLE} // Garante que o provedor seja o Google Maps
+      initialRegion={BRAZIL_REGION}
+      provider={PROVIDER_GOOGLE}
+      minZoomLevel={4} // Limit minimum zoom to show all Brazil
+      maxZoomLevel={15} // Limit maximum zoom for better performance
     >
-      {dados.map((caso, index) => (
-        <DengueMarker key={index} caso={caso} />
-      ))}
+      {dados.map((caso, index) => {
+        console.log('casos', caso);
+        return <DengueMarker key={`${caso.geocode}-${index}`} caso={caso} />;
+      })}
     </MapView>
   );
 };
