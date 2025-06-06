@@ -140,4 +140,3 @@ Lista estática das 10 principais cidades:
 ## Observações
 - O aplicativo requer conexão com internet
 - Os dados são atualizados conforme as semanas epidemiológicas
-- Em caso de falha na API do IBGE, o sistema usa uma lista predefinida de municípios
