@@ -77,11 +77,6 @@ react-native-app/
   - ew_start/ew_end: Semana epidemiológica
   - ey_start/ey_end: Ano epidemiológico
 
-### API IBGE (servicodados.ibge.gov.br)
-- **Endpoint**: `/localidades/distritos`
-- **Uso**: Listagem de municípios
-- **Fallback**: Lista estática de principais capitais
-
 ## 🏗️ Arquitetura
 
 ```
@@ -109,7 +104,7 @@ react-native-app/
 4. Verificação de área de risco local
 5. Notificações locais quando necessário
 
-## 🌐 APIs
+## 🌐 API
 
 ### API Principal (Info Dengue)
 - **URL**: https://info.dengue.mat.br/api/alertcity
@@ -117,12 +112,6 @@ react-native-app/
 - **Cache**: Implementado para municípios
 - **Retry**: Sistema automático de tentativas
 
-### IBGE API
-- **Base URL**: https://servicodados.ibge.gov.br/api/v1
-- **Endpoint**: /localidades/municipios
-- **Parâmetros**:
-  - `orderBy`: Ordenação (ex: 'nome')
-- **Timeout**: 30 segundos
 
 ### Dados Offline
 Lista estática das 10 principais cidades:
